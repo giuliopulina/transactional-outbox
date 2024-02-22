@@ -4,13 +4,14 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class EmployeeCreated extends DomainEvent {
-    private UUID id;
+    private UUID employeeId;
     private String firstName;
     private String lastName;
     private String email;

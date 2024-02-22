@@ -57,7 +57,7 @@ public class EmployeeMapper {
                 .aggregateType(EMPLOYEE_AGGREGATE_TYPE)
                 .aggregateId(employee.getId().toString())
                 .domainEvent(EmployeeCreated.builder()
-                        .id(employee.getId())
+                        .employeeId(employee.getId())
                         .firstName(employee.getFirstName())
                         .lastName(employee.getLastName())
                         .email(employee.getEmail())
@@ -70,7 +70,7 @@ public class EmployeeMapper {
                 .aggregateType(EMPLOYEE_AGGREGATE_TYPE)
                 .aggregateId(employee.getId().toString())
                 .domainEvent(EmployeeUpdated.builder()
-                        .id(employee.getId())
+                        .employeeId(employee.getId())
                         .firstName(employee.getFirstName())
                         .lastName(employee.getLastName())
                         .email(employee.getEmail())
@@ -82,7 +82,7 @@ public class EmployeeMapper {
         return EnrichedDomainEvent.<EmployeeDeleted>builder()
                 .aggregateType(EMPLOYEE_AGGREGATE_TYPE)
                 .aggregateId(id.toString())
-                .domainEvent(EmployeeDeleted.builder().id(id).build())
+                .domainEvent(EmployeeDeleted.builder().employeeId(id).build())
                 .build();
     }
 }
