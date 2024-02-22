@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
+import static io.awspring.cloud.sns.core.SnsHeaders.MESSAGE_DEDUPLICATION_ID_HEADER;
+import static io.awspring.cloud.sns.core.SnsHeaders.MESSAGE_GROUP_ID_HEADER;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -50,17 +53,13 @@ public class CDCService {
             entities.forEach(entity -> {
 
                 try {
-                    String payloadValue = objectMapper.writeValueAsString(entity.getPayload());
+                    final DomainEvent payload = entity.getPayload();
+                    String payloadValue = objectMapper.writeValueAsString(payload);
                     logger.info("Publishing " + payloadValue + " to topic " + snsTopic);
-                    /*var notification = SnsNotification.builder(payloadValue)
-                            .groupId(String.format("%s-%s", entity.getAggregateType(), entity.getAggregateId()))
-                            .headers(Map.of("eventType", entity.getEventType()))
-                            .build();
 
-                    snsOperations.sendNotification(snsTopic, notification);*/
-
-                    snsTemplate.convertAndSend(snsTopic, entity.getPayload(),
-                            Map.of(SnsHeaders.MESSAGE_GROUP_ID_HEADER, String.format("%s-%s", entity.getAggregateType(), entity.getAggregateId()),
+                    snsTemplate.convertAndSend(snsTopic, payload,
+                            Map.of(MESSAGE_GROUP_ID_HEADER, buildMessageGroupIdHeader(entity),
+                                    MESSAGE_DEDUPLICATION_ID_HEADER, payload.getEventId().toString(),
                                     "eventType", entity.getEventType()));
 
                     logger.info("Publishing to topic " + snsTopic + " completed");
@@ -76,5 +75,9 @@ public class CDCService {
 
         outboxRepository.deleteAllInBatch(entities);
 
+    }
+
+    private static String buildMessageGroupIdHeader(Outbox entity) {
+        return String.format("%s-%s", entity.getAggregateType(), entity.getAggregateId());
     }
 }

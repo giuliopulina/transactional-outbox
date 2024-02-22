@@ -1,10 +1,10 @@
 package me.ioannisioannou.transactional.outbox.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 @JsonSubTypes({
@@ -14,4 +14,10 @@ import java.io.Serializable;
 })
 
 public abstract class DomainEvent implements Serializable {
+
+    protected UUID eventId = UUID.randomUUID();
+
+    public UUID getEventId() {
+        return eventId;
+    }
 }
