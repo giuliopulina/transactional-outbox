@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.0</version>
+        <version>3.2.2</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,8 @@
     <description>Consumes domain events from its own SQS</description>
 
     <properties>
-        <java.version>11</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -36,11 +37,15 @@
         </dependency>
         <dependency>
             <groupId>io.awspring.cloud</groupId>
-            <artifactId>spring-cloud-aws-messaging</artifactId>
+            <artifactId>spring-cloud-aws-sns</artifactId>
         </dependency>
         <dependency>
             <groupId>io.awspring.cloud</groupId>
-            <artifactId>spring-cloud-aws-autoconfigure</artifactId>
+            <artifactId>spring-cloud-aws-sqs</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -60,7 +65,7 @@
             <dependency>
                 <groupId>io.awspring.cloud</groupId>
                 <artifactId>spring-cloud-aws-dependencies</artifactId>
-                <version>2.3.1</version>
+                <version>3.1.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -84,6 +89,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.12.1</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>

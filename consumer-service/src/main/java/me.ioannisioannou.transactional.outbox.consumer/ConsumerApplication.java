@@ -1,9 +1,8 @@
 package me.ioannisioannou.transactional.outbox.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.awspring.cloud.messaging.config.annotation.NotificationMessage;
-import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
-import io.awspring.cloud.messaging.listener.annotation.SqsListener;
+import io.awspring.cloud.sns.annotation.handlers.NotificationMessage;
+import io.awspring.cloud.sqs.annotation.SqsListener;
 import me.ioannisioannou.transactional.outbox.events.DomainEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class ConsumerApplication {
 		return jackson2MessageConverter;
 	}
 
-	@SqsListener(value = "${input_queue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
+	@SqsListener(value = "${input_queue}")
 	public void receiveQueueMessages(@NotificationMessage DomainEvent domainEvent) {
 		logger.info("Received domain event {}", domainEvent);
 	}

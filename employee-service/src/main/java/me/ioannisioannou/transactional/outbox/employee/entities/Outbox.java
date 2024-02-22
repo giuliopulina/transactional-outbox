@@ -1,14 +1,14 @@
 package me.ioannisioannou.transactional.outbox.employee.entities;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vladmihalcea.hibernate.type.json.JsonType;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.TypeDef;
+import me.ioannisioannou.transactional.outbox.events.DomainEvent;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
 
 @Entity
 @Table(name = "outbox")
@@ -16,7 +16,6 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TypeDef(typeClass = JsonType.class, defaultForType = JsonNode.class)
 public class Outbox {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "outbox_seq")
@@ -28,6 +27,7 @@ public class Outbox {
 
     private String eventType;
 
-    @Column(columnDefinition = "json")
-    private JsonNode payload;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "JSON")
+    private DomainEvent payload;
 }

@@ -11,6 +11,10 @@
 	<name>transactional-outbox</name>
 	<description>Transactional Outbox Pattern Example</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<modules>
 		<module>domain-events</module>
 		<module>employee-service</module>

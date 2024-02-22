@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.ioannisioannou.transactional.outbox.employee.entities.Outbox;
 import me.ioannisioannou.transactional.outbox.employee.events.EnrichedDomainEvent;
 import me.ioannisioannou.transactional.outbox.employee.repositories.OutboxRepository;
+import me.ioannisioannou.transactional.outbox.events.DomainEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class OutboxService {
                 .aggregateId(event.getAggregateId())
                 .aggregateType(event.getAggregateType())
                 .eventType(event.getDomainEventType())
-                .payload(objectMapper.convertValue(event.getDomainEvent(), JsonNode.class))
+                .payload(objectMapper.convertValue(event.getDomainEvent(), DomainEvent.class))
                 .build());
     }
 }

@@ -4,9 +4,12 @@ services:
     build: ./employee-service
     container_name: employee-service
     ports:
-      - 8001:8080
+      - "8001:8080"
+      - "5005:5005"
     environment:
-      - SPRING_PROFILES_ACTIVE=localstack
+      _JAVA_OPTIONS: >
+       -Xdebug
+       -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     depends_on:
       postgres:
         condition: service_healthy
@@ -16,10 +19,11 @@ services:
     build: ./consumer-service
     container_name: consumer-service-1
     ports:
-      - 8002:8080
+      - "8002:8080"
+      - "5006:5006"
     environment:
-      - SPRING_PROFILES_ACTIVE=localstack
       - INPUT_QUEUE=consumer_1_queue.fifo
+      - _JAVA_OPTIONS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
     depends_on:
       localstack:
         condition: service_healthy
@@ -27,9 +31,8 @@ services:
     build: ./consumer-service
     container_name: consumer-service-2
     ports:
-      - 8003:8080
+      - "8003:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=localstack
       - INPUT_QUEUE=consumer_2_queue.fifo
     depends_on:
       localstack:
@@ -37,23 +40,23 @@ services:
   postgres:
     image: postgres:12-alpine
     container_name: postgres
+    ports:
+      - "5432:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   localstack:
-    image: localstack/localstack:0.12.12
+    image: localstack/localstack:3.1.0
     container_name: localstack
     healthcheck:
-      test: ["CMD-SHELL", "awslocal sns list-topics && awslocal sqs list-queues"]
+      test: ["CMD-SHELL", "awslocal --region eu-central-1 sns list-topics && awslocal --region eu-central-1 sqs list-queues"]
     environment:
-      - AWS_DEFAULT_REGION=eu-central-1
       - SERVICES=sqs,sns
-      - HOSTNAME_EXTERNAL=localstack
+      - LOCALSTACK_HOST=localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
     ports:
       - "4566-4599:4566-4599"
     volumes:
-      - "/tmp/localstack:/tmp/localstack"
-      - "./.localstack:/docker-entrypoint-initaws.d"
+      - "./.localstack/setup.sh:/etc/localstack/init/ready.d/setup.sh"
